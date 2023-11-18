@@ -20,8 +20,6 @@ const migrateDb = async () => {
     await migrate(db, { migrationsFolder: "migrations" });
     console.log("🟢 Database migrated");
   } catch (error) {
-    console.log("error", error);
-
     console.log("🔴 Error migrating database");
   }
 };
