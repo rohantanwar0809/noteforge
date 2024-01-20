@@ -1,7 +1,6 @@
 import { InferSelectModel } from "drizzle-orm";
 import {
   customers,
-  files,
   folders,
   prices,
   products,
@@ -9,7 +8,7 @@ import {
   users,
   workspaces,
 } from "../../../migrations/schema";
-import exp from "constants";
+import { files } from "./schema";
 
 export type Json =
   | string
@@ -22,6 +21,40 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      collaborators: {
+        Row: {
+          created_at: string;
+          id: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collaborators_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "collaborators_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       customers: {
         Row: {
           id: string;
@@ -39,7 +72,6 @@ export interface Database {
           {
             foreignKeyName: "customers_id_fkey";
             columns: ["id"];
-            isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["id"];
           }
@@ -48,52 +80,47 @@ export interface Database {
       files: {
         Row: {
           banner_url: string | null;
-          created_at: string | null;
+          created_at: string;
           data: string | null;
-          folder_id: string | null;
+          folder_id: string;
           icon_id: string;
           id: string;
           in_trash: string | null;
-          logo: string | null;
           title: string;
-          workspace_id: string | null;
+          workspace_id: string;
         };
         Insert: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
-          folder_id?: string | null;
+          folder_id: string;
           icon_id: string;
           id?: string;
           in_trash?: string | null;
-          logo?: string | null;
           title: string;
-          workspace_id?: string | null;
+          workspace_id: string;
         };
         Update: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
-          folder_id?: string | null;
+          folder_id?: string;
           icon_id?: string;
           id?: string;
           in_trash?: string | null;
-          logo?: string | null;
           title?: string;
-          workspace_id?: string | null;
+          workspace_id?: string;
         };
         Relationships: [
           {
             foreignKeyName: "files_folder_id_folders_id_fk";
             columns: ["folder_id"];
-            isOneToOne: false;
             referencedRelation: "folders";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "files_workspace_id_workspaces_id_fk";
             columns: ["workspace_id"];
-            isOneToOne: false;
             referencedRelation: "workspaces";
             referencedColumns: ["id"];
           }
@@ -102,42 +129,38 @@ export interface Database {
       folders: {
         Row: {
           banner_url: string | null;
-          created_at: string | null;
+          created_at: string;
           data: string | null;
           icon_id: string;
           id: string;
           in_trash: string | null;
-          logo: string | null;
           title: string;
-          workspace_id: string | null;
+          workspace_id: string;
         };
         Insert: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           icon_id: string;
           id?: string;
           in_trash?: string | null;
-          logo?: string | null;
           title: string;
-          workspace_id?: string | null;
+          workspace_id: string;
         };
         Update: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           icon_id?: string;
           id?: string;
           in_trash?: string | null;
-          logo?: string | null;
           title?: string;
-          workspace_id?: string | null;
+          workspace_id?: string;
         };
         Relationships: [
           {
             foreignKeyName: "folders_workspace_id_workspaces_id_fk";
             columns: ["workspace_id"];
-            isOneToOne: false;
             referencedRelation: "workspaces";
             referencedColumns: ["id"];
           }
@@ -191,7 +214,6 @@ export interface Database {
           {
             foreignKeyName: "prices_product_id_fkey";
             columns: ["product_id"];
-            isOneToOne: false;
             referencedRelation: "products";
             referencedColumns: ["id"];
           }
@@ -280,14 +302,18 @@ export interface Database {
           {
             foreignKeyName: "subscriptions_price_id_fkey";
             columns: ["price_id"];
-            isOneToOne: false;
+            referencedRelation: "prices";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "subscriptions_price_id_prices_id_fk";
+            columns: ["price_id"];
             referencedRelation: "prices";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "subscriptions_user_id_fkey";
             columns: ["user_id"];
-            isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
           }
@@ -325,7 +351,6 @@ export interface Database {
           {
             foreignKeyName: "users_id_fkey";
             columns: ["id"];
-            isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["id"];
           }
@@ -334,7 +359,7 @@ export interface Database {
       workspaces: {
         Row: {
           banner_url: string | null;
-          created_at: string | null;
+          created_at: string;
           data: string | null;
           icon_id: string;
           id: string;
@@ -345,7 +370,7 @@ export interface Database {
         };
         Insert: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           icon_id: string;
           id?: string;
@@ -356,7 +381,7 @@ export interface Database {
         };
         Update: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           icon_id?: string;
           id?: string;
@@ -392,87 +417,7 @@ export interface Database {
   };
 }
 
-export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-        Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
-    }
-    ? R
-    : never
-  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
-      Database["public"]["Views"])
-  ? (Database["public"]["Tables"] &
-      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
-      Row: infer R;
-    }
-    ? R
-    : never
-  : never;
-
-export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
-    }
-    ? I
-    : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Insert: infer I;
-    }
-    ? I
-    : never
-  : never;
-
-export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
-    }
-    ? U
-    : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Update: infer U;
-    }
-    ? U
-    : never
-  : never;
-
-export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof Database["public"]["Enums"]
-    | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
-    : never = never
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
-  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
-  : never;
-
-export type Workspace = InferSelectModel<typeof workspaces>;
+export type workspace = InferSelectModel<typeof workspaces>;
 export type User = InferSelectModel<typeof users>;
 export type Folder = InferSelectModel<typeof folders>;
 export type File = InferSelectModel<typeof files>;
@@ -480,7 +425,9 @@ export type Product = InferSelectModel<typeof products>;
 export type Price = InferSelectModel<typeof prices> & { products?: Product };
 export type Customer = InferSelectModel<typeof customers>;
 export type Subscription = InferSelectModel<typeof subscriptions> & {
-  prices?: Price;
+  prices: Price;
 };
 
-export type ProductWithPrices = Product & { prices?: Price[] };
+export type ProductWirhPrice = Product & {
+  prices?: Price[];
+};
