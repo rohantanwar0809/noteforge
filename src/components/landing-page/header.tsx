@@ -78,7 +78,7 @@ const Header = () => {
         className="w-full flex gap-2
         justify-left items-center"
       >
-        <Image src={Logo} alt="Cypress Logo" width={150} height={150} />
+        <Image src={Logo} alt="NoteForge Logo" width={150} height={150} />
       </Link>
       <NavigationMenu className="hidden md:block">
         <NavigationMenuList className="gap-6">

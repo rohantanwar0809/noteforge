@@ -201,7 +201,11 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
               )} */}
             </div>
             <div className="self-end">
-              <Button disabled={isLoading} type="submit">
+              <Button
+                disabled={isLoading}
+                onClick={handleSubmit(onSubmit)}
+                type="submit"
+              >
                 {!isLoading ? "Create Workspace" : <Loader />}
               </Button>
             </div>
